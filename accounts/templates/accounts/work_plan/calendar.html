@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Calendario - Plan de Trabajo{% endblock %}
+
+{% block extra_css %}
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+<style>
+    .filters-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .filter-section {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    
+    .filter-group {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .filter-group label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: #495057;
+    }
+    
+    .filter-group select {
+        width: 100%;
+    }
+    
+    #calendar {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .fc-event {
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 2px 4px;
+    }
+    
+    .fc-event:hover {
+        opacity: 0.8;
+    }
+    
+    .legend {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+    }
+    
+    .btn-create {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 1000;
+    }
+    
+    .btn-create:hover {
+        transform: scale(1.1);
+        transition: transform 0.2s;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-calendar-alt text-primary me-2"></i>
+            Plan de Trabajo Diario
+        </h1>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="filters-card">
+    <h5 class="mb-3">
+        <i class="fas fa-filter me-2"></i>Filtros
+    </h5>
+    <div class="filter-section">
+        <div class="filter-group">
+            <label for="filter-type">
+                <i class="fas fa-tag me-1"></i>Tipo de Visita
+            </label>
+            <select id="filter-type" class="form-select">
+                <option value="">Todos los tipos</option>
+                <option value="1">Médicos</option>
+                <option value="2">Instituciones</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="filter-status">
+                <i class="fas fa-traffic-light me-1"></i>Estado
+            </label>
+            <select id="filter-status" class="form-select">
+                <option value="">Todos los estados</option>
+                {% for status in statuses %}
+                    <option value="{{ status.id }}">{{ status.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="filter-gestor">
+                <i class="fas fa-user-tie me-1"></i>Gestor
+            </label>
+            <select id="filter-gestor" class="form-select">
+                <option value="">Todos los gestores</option>
+                {% for gestor in gestores %}
+                    <option value="{{ gestor.id }}">{{ gestor.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="filter-group" style="display: flex; align-items: flex-end;">
+            <button id="clear-filters" class="btn btn-outline-secondary w-100">
+                <i class="fas fa-times me-1"></i>Limpiar Filtros
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Calendario -->
+<div id="calendar"></div>
+
+<!-- Leyenda -->
+<div class="legend">
+    <div class="legend-item">
+        <div class="legend-color" style="background-color: #3788d8;"></div>
+        <span>Programada</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background-color: #28a745;"></div>
+        <span>Realizada</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background-color: #ffc107;"></div>
+        <span>Reprogramada</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background-color: #dc3545;"></div>
+        <span>Cancelada</span>
+    </div>
+</div>
+
+<!-- Botón flotante para crear visita -->
+<a href="{% url 'create_visit' %}" class="btn btn-primary btn-create" title="Crear nueva visita">
+    <i class="fas fa-plus"></i>
+</a>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/es.global.min.js'></script>
+<script src="{% static 'js/calendar.js' %}"></script>
+{% endblock %}
